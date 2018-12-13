@@ -193,14 +193,43 @@ resource "oci_core_security_list" "PrivateDB2SecurityList" {
   ]
 }
 
-//create 3 subnets
-
+//Bastion Subnet
 resource "oci_core_subnet" "BastionSubnet" {
   availability_domain        = "ToGS:US-ASHBURN-AD-1"
   cidr_block                 = "10.0.0.0/24"
   compartment_id             = "${var.compartment_ocid}"
   display_name               = "BastionSubnet"
   dns_label                  = "bastionDNS"
+  vcn_id                     = "${oci_core_virtual_network.VCN.id}"
+  prohibit_public_ip_on_vnic = false
+  route_table_id             = "${oci_core_route_table.PublicSubnetRT.id}"
+
+  security_list_ids = [
+    "${oci_core_security_list.BastionSecurityList.id}",
+  ]
+}
+
+resource "oci_core_subnet" "webServerSubnet1" {
+  availability_domain        = "ToGS:US-ASHBURN-AD-1"
+  cidr_block                 = "10.0.3.0/24"
+  compartment_id             = "${var.compartment_ocid}"
+  display_name               = "webServerSubnet1"
+  dns_label                  = "web1DNS"
+  vcn_id                     = "${oci_core_virtual_network.VCN.id}"
+  prohibit_public_ip_on_vnic = false
+  route_table_id             = "${oci_core_route_table.PublicSubnetRT.id}"
+
+  security_list_ids = [
+    "${oci_core_security_list.BastionSecurityList.id}",
+  ]
+}
+
+resource "oci_core_subnet" "webServerSubnet2" {
+  availability_domain        = "ToGS:US-ASHBURN-AD-2"
+  cidr_block                 = "10.0.4.0/24"
+  compartment_id             = "${var.compartment_ocid}"
+  display_name               = "webServerSubnet2"
+  dns_label                  = "web2DNS"
   vcn_id                     = "${oci_core_virtual_network.VCN.id}"
   prohibit_public_ip_on_vnic = false
   route_table_id             = "${oci_core_route_table.PublicSubnetRT.id}"
@@ -240,7 +269,7 @@ resource "oci_core_subnet" "db2Subnet" {
   ]
 }
 
-//provision two VMs for the databases
+//provision two database systems
 
 resource "oci_core_instance" "dbSystem1" {
   availability_domain = "ToGS:US-ASHBURN-AD-1"
@@ -311,7 +340,7 @@ resource "oci_core_instance" "bastionInstance" {
   }
 }
 
-  resource "oci_core_instance" "webServer1" {
+resource "oci_core_instance" "webServer1" {
   availability_domain = "ToGS:US-ASHBURN-AD-1"
   compartment_id      = "${var.compartment_ocid}"
 
@@ -356,4 +385,3 @@ resource "oci_core_instance" "webServer2" {
     assign_public_ip = true
   }
 }
-
