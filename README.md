@@ -1,2 +1,2 @@
 # terraformJenkins
-Deploying active data guard using terraform with Jenkins
+Deploying terraform with Jenkins
