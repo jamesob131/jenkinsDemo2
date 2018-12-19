@@ -17,7 +17,7 @@ pipeline {
 
     stage('TF Plan') {
       steps {
-          sh 'terraform plan -out -refresh=true myplan'
+          sh 'terraform plan -out myplan'
       }      
     }
 
