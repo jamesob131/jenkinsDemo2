@@ -5,6 +5,7 @@ variable "private_key_path" {}
 variable "compartment_ocid" {}
 variable "region" {}
 
+# commenting code is always a good idea 
 provider "oci" {
   auth   = "InstancePrincipal"
   region = "us-ashburn-1"
